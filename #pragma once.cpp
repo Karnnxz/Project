@@ -1,38 +1,40 @@
-#pragma once
+#include <iostream>
+#include <cmath>   
 
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "Coin.generated.h"
-
-UCLASS()
-class YOURPROJECT_API ACoin : public AActor
-{
-	GENERATED_BODY()
-
+class Coin {
 public:
-	// Sets default values for this actor's properties
-	ACoin();
+   
+    Coin(float moveSpeed = 300.0f, float floatHeight = 20.0f, float floatSpeed = 1.0f, float rotationSpeed = 90.0f)
+        : MoveSpeed(moveSpeed), FloatHeight(floatHeight), FloatSpeed(floatSpeed), RotationSpeed(rotationSpeed) {
+           
+            OriginalX = 0.0f;
+            OriginalY = 0.0f;
+            OriginalZ = 0.0f;
+            currentRotation = 0.0f;
+    }
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    void Update(float deltaTime) {
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+        OriginalX += MoveSpeed * deltaTime;
 
-	// Movement Speed
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coin Settings")
-	float MoveSpeed = 300.0f;
+        OriginalZ = FloatHeight * sin(FloatSpeed * timeElapsed);
 
-	// Floating Height and Speed
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coin Settings")
-	float FloatHeight = 20.0f;
+        currentRotation += RotationSpeed * deltaTime;
+        
+        timeElapsed += deltaTime;
+    }
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coin Settings")
-	float FloatSpeed = 1.0f;
+    void PrintPosition() {
+        std::cout << "Position: (" << OriginalX << ", " << OriginalY << ", " << OriginalZ << ")\n";
+        std::cout << "Rotation: " << currentRotation << " degrees\n";
+    }
 
 private:
-	// Original location of the coin
-	FVector OriginalLocation;
+    float OriginalX, OriginalY, OriginalZ;  
+    float MoveSpeed; 
+    float FloatHeight;
+    float FloatSpeed;
+    float RotationSpeed;  
+    float timeElapsed = 0.0f;  
+    float currentRotation;  
 };
