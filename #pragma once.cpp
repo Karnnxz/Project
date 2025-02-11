@@ -2,6 +2,7 @@
 #include <cmath>   
 
 class Coin {
+
 public:
    
     Coin(float moveSpeed = 300.0f, float floatHeight = 20.0f, float floatSpeed = 1.0f, float rotationSpeed = 90.0f)
