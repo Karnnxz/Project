@@ -1,6 +1,5 @@
 #ifndef COIN_H
 #define COIN_H
-
 #include "raylib.h"
 
 typedef struct Coin {
