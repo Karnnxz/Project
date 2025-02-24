@@ -1,14 +1,25 @@
 #ifndef COIN_H
 #define COIN_H
+
 #include "raylib.h"
 
-typedef struct Coin {
+class Coin {
+public:
+    Coin(float x, float y);
+    void Update();
+    void Draw();
+    bool IsCollected() const;
+    void Collect();
+    Rectangle GetRec() const;
+    void Reset();
+    void SetPosition(float x, float y); 
+
+private:
     Rectangle rec;
     bool collected;
-} Coin;
-
-Coin CreateCoin(float x, float y);
-void UpdateCoin(Coin* coin);
-void DrawCoin(Coin coin);
+    float initialY;
+    float oscillationSpeed;
+    float oscillationAmplitude; // Add this line
+};
 
 #endif // COIN_H
