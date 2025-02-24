@@ -3,19 +3,28 @@
 
 #include "raylib.h"
 
-typedef struct Player {
+class Player {
+public:
+    Player(float x, float y);
+    ~Player();
+
+    void Update();
+    void Draw();
+    void Unload();
+    void Reset(float x, float y); // Declaration of Reset method
+    Rectangle GetRec() const; // Getter for rec
+    bool IsJumping() const; // Getter for isJumping
+    void SetGameOver(bool gameOver); // Setter for isGameOver
+
+private:
     Rectangle rec;
     Vector2 velocity;
     bool isJumping;
-    bool isGameOver; // Ensure isGameOver member is included
-    Texture2D textures[2]; // เก็บ 2 ภาพสำหรับแอนิเมชัน
+    bool isGameOver;
+    Texture2D textures[2];
     int currentFrame;
     int frameCounter;
-} Player;
+    float scaleX;
+};
 
-Player CreatePlayer(float x, float y);
-void UpdatePlayer(Player* player);
-void DrawPlayer(Player player);
-void UnloadPlayer(Player* player); // Add function to unload the texture
-
-#endif // PLAYER_H#pragma once
+#endif // PLAYER_H
