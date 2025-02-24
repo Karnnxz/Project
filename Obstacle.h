@@ -2,19 +2,26 @@
 #define OBSTACLE_H
 
 #include "raylib.h"
+#include "Player.h"
 
-typedef struct Obstacle {
+class Obstacle {
+public:
+    Obstacle(float x, float y);
+    void Update();
+    void Draw();
+    void Unload();
+    Rectangle GetRec() const; // Getter for rec
+    bool IsMovingRight() const; // Getter for movingRight
+    void Reset(float x, float y); // Declaration of Reset method
+
+private:
     Rectangle rec;
     bool active;
     Texture2D texture;
-    float velocity;  // ความเร็วในการเคลื่อนที่
-    bool movingRight; // ใช้บ่งบอกทิศทางการเคลื่อนที่
-    float leftBoundary;  // ขอบเขตการเคลื่อนที่ซ้าย
-    float rightBoundary; // ขอบเขตการเคลื่อนที่ขวา
-} Obstacle;
-
-Obstacle CreateObstacle(float x, float y);
-void UpdateObstacle(Obstacle* obstacle);
-void DrawObstacle(Obstacle obstacle);
+    float velocity;
+    bool movingRight;
+    float leftBoundary;
+    float rightBoundary;
+};
 
 #endif // OBSTACLE_H
