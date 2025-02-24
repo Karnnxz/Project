@@ -1,88 +1,39 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <sstream>
+#include "TextRenderer.h"
+#include "raylib.h"
 
-int main() {
-    
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Running Game HUD"); /////
-    
-    sf::Font font;
-    if (!font.loadFromFile("arial.ttf")) {
-        std::cerr << "Error loading font!" << std::"\n";
-        return -1;
-    }
-    
-    int score = 0;
-    int level = 1;
-    int maxlevel = 5;
-    int coinvalue = 5;
-    
-    sf::Text scoreText, levelText, statusText;
-    scoreText.setFont(font);
-    scoreText.setCharacterSize(25);           /////
-    scoreText.setFillColor(sf::Color::White); /////
-    scoreText.setPosition(10, 10);            /////
-    
-    levelText.setFont(font);
-    levelText.setCharacterSize(25);           /////
-    levelText.setFillColor(sf::Color::White); /////
-    levelText.setPosition(10, 40);            /////
-    
-    statusText.setFont(font);
-    statusText.setCharacterSize(25);          /////
-    statusText.setFillColor(sf::Color::Red);  /////
-    statusText.setPosition(400, 300);         /////
-    statusText.setString("");
-    
-    bool gameOver = false;
-    
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-        
-        if (!gameOver) {
+#define GROUND_Y 400
+#define GROUND_HEIGHT 50
 
-            score += coinvalue; 
-            score += 10; 
-            
-            if (score % 100 == 0 && level < maxlevel) {
-                level++;
-                coinvalue = level * 5; 
-                
-                switch (level) {
-                    case 2: statusText.setString("Great");          break;
-                    case 3: statusText.setString("Excellent!");     break;
-                    case 4: statusText.setString("Excellent!");     break;
-                    case 5: statusText.setString("Perfect!");       break;
-                    case 6: statusText.setString("You’ve got it!"); break;
-                }
-                sf::FloatRect textRect = statusText.getLocalBounds();
-                statusText.setOrigin(textRect.width / 2 , textRect.height / 2);
-                statusText.setPosition(400, 300);
-            }
-        }
-        
-        ///////////////////////////////////////////////////////////////////
-        std::ostringstream scoreStream;
-        scoreStream << "Score: " << score;
-        scoreText.setString(scoreStream.str());
-        
-        std::ostringstream levelStream;
-        levelStream << "Level: " << level;
-        levelText.setString(levelStream.str());
-        
-        ///////////////////////////////////////////////////////////////////
-        window.clear();
-        window.draw(scoreText);
-        window.draw(levelText);
-        if (statusText.getString() != "") {
-            window.draw(statusText);
-        }
-        window.display();
-    }
-    
-    return 0;
+void TextRenderer::DrawGroundBackground(int screenWidth) {
+    DrawRectangle(0, GROUND_Y, screenWidth, GROUND_HEIGHT, DARKGREEN);
+}
+
+void TextRenderer::DrawTextCentered(const char* text, int fontSize, Color color, int screenWidth, int screenHeight) {
+    int textWidth = MeasureText(text, fontSize);
+    int textHeight = fontSize; // Assuming the height of the text is equal to the font size
+    int posX = (screenWidth - textWidth) / 2;
+    int posY = (screenHeight - textHeight) / 2;
+    DrawText(text, posX, posY, fontSize, color);
+}
+
+
+void TextRenderer::DrawScore(int score) {
+    DrawText(TextFormat("Score: %d", score), 10, 10, 20, DARKGRAY);
+}
+
+void TextRenderer::DrawGameOver(int screenWidth, int screenHeight) {
+    Vector2 gameOverTextSize = MeasureTextEx(GetFontDefault(), "Game Over!", 40, 1);
+    Vector2 restartTextSize = MeasureTextEx(GetFontDefault(), "Press R to restart", 30, 1);
+    float boxWidth = (gameOverTextSize.x > restartTextSize.x) ? gameOverTextSize.x : restartTextSize.x;
+    float boxHeight = gameOverTextSize.y + restartTextSize.y + 20;
+    Rectangle backgroundRect = Rectangle{
+        screenWidth / 2 - boxWidth / 2 - 10,
+        screenHeight / 2 - boxHeight / 2 - 10,
+        boxWidth + 20,
+        boxHeight + 20
+    };
+
+    DrawRectangleRec(backgroundRect, WHITE);
+    DrawTextEx(GetFontDefault(), "Game Over!", Vector2{ screenWidth / 2 - gameOverTextSize.x / 2, screenHeight / 2 - gameOverTextSize.y / 2 }, 40, 1, RED);
+    DrawTextEx(GetFontDefault(), "Press R to restart", Vector2{ screenWidth / 2 - restartTextSize.x / 2, screenHeight / 2 + gameOverTextSize.y / 2 }, 30, 1, RED);
 }
