@@ -1,56 +1,82 @@
 #include "Obstacle.h"
-#include "raylib.h"
+#include "raylib.h" 
+#define GROUND_Y 480
 
-// ฟังก์ชันที่ใช้โหลดภาพของอุปสรรค
-Obstacle CreateObstacle(float x, float y) {
-    Obstacle obstacle;
-    obstacle.texture = LoadTexture("../../../../AssetsCompro/Monster/MonsterB.png");
+// Obstacle.cpp
+Obstacle::Obstacle(float x, float y) {
+    float scaleFactor = 0.1f; // ปรับขนาดใหม่
+    texture = LoadTexture("../../../../AssetsCompro/Monster/MonsterB.png");
 
-    // ตรวจสอบว่าโหลดภาพสำเร็จ
-    if (obstacle.texture.id == 0) {
-        TraceLog(LOG_ERROR, "Failed to load texture for MonsterB.png");
+    if (texture.id == 0) {
+        TraceLog(LOG_ERROR, "Failed to load obstacle texture!");
     }
 
-    // ปรับขนาดของ Rectangle ให้เล็กลง
-    obstacle.rec = Rectangle{ x, y, (float)obstacle.texture.width * 0.1f, (float)obstacle.texture.height * 0.1f };
+    // **ปรับแก้ตำแหน่งของ Obstacle ให้วางบนพื้นอย่างถูกต้อง**
+    rec = { x, GROUND_Y - (texture.height * scaleFactor),
+            texture.width * scaleFactor, texture.height * scaleFactor };
 
-    // กำหนดขอบเขตการเคลื่อนที่
-    obstacle.leftBoundary = x - 100;   // ขอบซ้าย (ตัวอย่างให้มอนสเตอร์เดินไปซ้าย 100 หน่วย)
-    obstacle.rightBoundary = x + 100;  // ขอบขวา (ตัวอย่างให้มอนสเตอร์เดินไปขวา 100 หน่วย)
+    active = true;
+    velocity = 1.5f;
+    movingRight = true;
+    leftBoundary = x - 100;
+    rightBoundary = x + 100;
 
-    obstacle.active = true;
-    obstacle.velocity = 2.0f;
-    obstacle.movingRight = true;  // เริ่มต้นเคลื่อนที่ไปขวา
-
-    return obstacle;
+    // **ตรวจสอบค่า rec.x, rec.y, rec.width, rec.height**
+    TraceLog(LOG_INFO, "Obstacle Created at x=%.2f, y=%.2f, width=%.2f, height=%.2f",
+        rec.x, rec.y, rec.width, rec.height);
 }
 
-void UpdateObstacle(Obstacle* obstacle) {
-    // เปลี่ยนทิศทางการเคลื่อนที่เมื่อถึงขอบซ้ายหรือขวา
-    if (obstacle->movingRight) {
-        obstacle->rec.x += obstacle->velocity;  // เคลื่อนที่ไปขวา
-        if (obstacle->rec.x + obstacle->rec.width >= obstacle->rightBoundary) {  // ขอบขวาของการเคลื่อนที่
-            obstacle->movingRight = false;  // เปลี่ยนทิศทางไปซ้าย
+
+void Obstacle::Update() {
+    if (active) {
+        if (movingRight) {
+            rec.x += velocity;
+            if (rec.x >= rightBoundary) movingRight = false;
+        }
+        else {
+            rec.x -= velocity;
+            if (rec.x <= leftBoundary) movingRight = true;
         }
     }
+}
+
+
+
+void Obstacle::Draw() {
+    if (texture.id != 0) {
+        Rectangle sourceRec = { 0, 0, (float)texture.width, (float)texture.height };
+        Rectangle destRec = { rec.x, rec.y, rec.width, rec.height };
+        DrawTexturePro(texture, { 0, 0, (float)texture.width, (float)texture.height }, destRec, { 0, 0 }, 0.0f, WHITE);
+
+        Vector2 origin = { 0, 0 };
+    }
     else {
-        obstacle->rec.x -= obstacle->velocity;  // เคลื่อนที่ไปซ้าย
-        if (obstacle->rec.x <= obstacle->leftBoundary) {  // ขอบซ้ายของการเคลื่อนที่
-            obstacle->movingRight = true;  // เปลี่ยนทิศทางไปขวา
-        }
+        TraceLog(LOG_ERROR, "Obstacle texture is not loaded properly.");
     }
 }
 
-void DrawObstacle(Obstacle obstacle) {
-    if (obstacle.texture.id != 0) { // ตรวจสอบว่าภาพโหลดสำเร็จหรือไม่
-        // ใช้ DrawTexturePro เพื่อปรับขนาดภาพ
-        DrawTexturePro(obstacle.texture,
-            Rectangle{ 0, 0, (float)obstacle.texture.width, (float)obstacle.texture.height }, // ต้นฉบับ
-            Rectangle{ obstacle.rec.x, obstacle.rec.y, obstacle.rec.width, obstacle.rec.height }, // วาดที่ตำแหน่งเดิม
-            Vector2{ obstacle.rec.width / 2, obstacle.rec.height / 2 }, // ใช้ origin เดิม
-            0.0f, WHITE);
-    }
-    else {
-        DrawRectangleRec(obstacle.rec, RED); // ถ้าโหลดภาพไม่ได้ ให้แสดงกล่องสีแดงแทน
-    }
+Rectangle Obstacle::GetRec() const {
+
+        float hitboxMarginX = 10.0f;  // ลดขนาดขอบด้านข้าง
+        float hitboxMarginY = 5.0f;   // ลดขนาดขอบด้านบน-ล่าง
+        return { rec.x + hitboxMarginX, rec.y + hitboxMarginY,
+                 rec.width - 2 * hitboxMarginX, rec.height - 2 * hitboxMarginY };
+    
+
 }
+
+bool Obstacle::IsMovingRight() const {
+    return movingRight;
+}
+
+void Obstacle::Unload() {
+    // ปลดโหลดทรัพยากรของ Obstacle
+    UnloadTexture(texture);
+}
+
+void Obstacle::Reset(float x, float y) {
+    rec.y = GROUND_Y - rec.height;
+    rec.x = x;
+    movingRight = true;
+}
+
