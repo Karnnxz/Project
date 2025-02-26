@@ -1,4 +1,4 @@
-﻿#include "ScreenController.h"
+#include "ScreenController.h"
 #include "TextRenderer.h"
 #include "raylib.h"
 #include "Player.h"
@@ -38,6 +38,11 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             }
         }
 
+		if (score == 50) { // ให้เปลี่ยน background ที่ score 50
+            UnloadTexture(background);
+            Texture2D background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
+		}
+
         Rectangle playerRec = player.GetRec();
         Rectangle obstacleRec = obstacle.GetRec();
 
@@ -73,11 +78,11 @@ void ScreenController::Draw(int score, bool gameOver) {
     ClearBackground(RAYWHITE);  // ลบ BeginDrawing() ออกไป
     DrawTextureEx(background, Vector2{ 0, 0 }, 0.0f, (float)screenWidth / background.width, WHITE);
     // 🟩 วาดพื้นดินให้มีความยาวเท่ากับ MAP_LENGTH
-    
+
 
     BeginMode2D(camera);
     //DrawRectangle(0, GROUND_Y, MAP_LENGTH, GROUND_HEIGHT, DARKBROWN);
- 
+
 
 
     player.Draw();
@@ -96,7 +101,3 @@ void ScreenController::Draw(int score, bool gameOver) {
         textRenderer.DrawScore(score);
     }
 }
-
-
-
-
