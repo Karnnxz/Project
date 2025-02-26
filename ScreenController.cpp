@@ -64,6 +64,8 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
         if (IsKeyPressed(KEY_R)) {
             score = 0;
             gameOver = false;
+			UnloadTexture(background);
+			Texture2D background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background.png"); // โหลด background ใหม่
             player.SetGameOver(false);
             player.Reset(100, GROUND_Y - 80);
             for (int i = 0; i < coinCount; i++) {
