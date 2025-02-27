@@ -25,6 +25,7 @@ private:
     Camera2D camera;
     Texture2D groundTile;
     bool backgroundChanged = false;
+    int backgroundState = 1;  // 1 = พื้นหลังเริ่มต้น, 2 = พื้นหลังที่ 2, 3 = พื้นหลังที่ 3
 };
 
 #endif // SCREENCONTROLLER_H
