@@ -24,6 +24,7 @@ private:
     Texture2D& background;
     Camera2D camera;
     Texture2D groundTile;
+    bool backgroundChanged = false;
 };
 
 #endif // SCREENCONTROLLER_H
