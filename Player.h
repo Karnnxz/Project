@@ -4,6 +4,9 @@
 #include "raylib.h"
 
 class Player {
+private:
+    int jumpCount = 0;
+	const int maxJumps = 2; // กระโดดได้สูงสุด 2 ครั้ง (Double Jump)
 public:
     Player(float x, float y);
     ~Player();
