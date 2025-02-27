@@ -7,7 +7,7 @@
 #include <cmath>
 
 #define GROUND_Y 480 
-#define MAP_LENGTH 800 
+#define MAP_LENGTH 800
 // #define GROUND_HEIGHT 150 
 
 ScreenController::ScreenController(int screenWidth, int screenHeight, Player& player, Coin* coins, int coinCount, Obstacle& obstacle, Texture2D& background)
@@ -38,10 +38,11 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             }
         }
 
-		if (score == 50) { // ให้เปลี่ยน background ที่ score 50
-            UnloadTexture(background);
-            Texture2D background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
-		}
+        if (score >= 25 && !backgroundChanged) {
+            UnloadTexture(background);  // ลบพื้นหลังเดิม
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png"); // โหลดพื้นหลังใหม่
+            backgroundChanged = true;  // ป้องกันการโหลดซ้ำ
+        }
 
         Rectangle playerRec = player.GetRec();
         Rectangle obstacleRec = obstacle.GetRec();
@@ -64,8 +65,9 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
         if (IsKeyPressed(KEY_R)) {
             score = 0;
             gameOver = false;
-			UnloadTexture(background);
-			Texture2D background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background.png"); // โหลด background ใหม่
+            backgroundChanged = false;  // รีเซ็ตการเปลี่ยนพื้นหลัง
+            UnloadTexture(background);
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background.png"); // โหลดพื้นหลังเดิม
             player.SetGameOver(false);
             player.Reset(100, GROUND_Y - 80);
             for (int i = 0; i < coinCount; i++) {
