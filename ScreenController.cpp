@@ -38,10 +38,18 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             }
         }
 
-        if (score >= 25 && !backgroundChanged) {
-            UnloadTexture(background);  // ลบพื้นหลังเดิม
-            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png"); // โหลดพื้นหลังใหม่
-            backgroundChanged = true;  // ป้องกันการโหลดซ้ำ
+        // เปลี่ยนพื้นหลังเมื่อคะแนนถึง 25
+        if (score >= 25 && backgroundState == 1) {
+            UnloadTexture(background);
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
+            backgroundState = 2;  // อัปเดตสถานะพื้นหลัง
+        }
+
+        // เปลี่ยนพื้นหลังเมื่อคะแนนถึง 50
+        if (score >= 50 && backgroundState == 2) {
+            UnloadTexture(background);
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background3.png");
+            backgroundState = 3;  // อัปเดตสถานะพื้นหลัง
         }
 
         Rectangle playerRec = player.GetRec();
@@ -65,9 +73,9 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
         if (IsKeyPressed(KEY_R)) {
             score = 0;
             gameOver = false;
-            backgroundChanged = false;  // รีเซ็ตการเปลี่ยนพื้นหลัง
+            backgroundState = 1;  // รีเซ็ตพื้นหลังกลับไปที่ Background1
             UnloadTexture(background);
-            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background.png"); // โหลดพื้นหลังเดิม
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background.png");
             player.SetGameOver(false);
             player.Reset(100, GROUND_Y - 80);
             for (int i = 0; i < coinCount; i++) {
