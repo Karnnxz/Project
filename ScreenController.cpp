@@ -70,7 +70,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
 
             // โหลดพื้นหลังใหม่
             UnloadTexture(background);
-            background = LoadTexture("../../../../AssetsCompro/Monster/background2.jpg");
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
 
             // รีเซ็ตค่าของ Player
             player.SetGameOver(false);
@@ -88,8 +88,15 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
         float cameraMaxX = mapEndX - screenWidth / 2;
 
         camera.target.x = fmax(cameraMinX, fmin(playerCenterX, cameraMaxX));
-        camera.target.y = player.GetRec().y + player.GetRec().height / 2 - 60;
+        // ✅ ทำให้กล้องติดตามตัวละครอย่างสมูท
+        float followSpeed = 0.1f; // ค่าความเร็วในการติดตาม
+        camera.target.y += (player.GetRec().y - camera.target.y) * followSpeed;
 
+        float minCameraY = 200.0f;  // ป้องกันกล้องลงต่ำเกินไป
+        float maxCameraY = 500.0f;  // ป้องกันกล้องขึ้นสูงเกินไป
+
+        if (camera.target.y < minCameraY) camera.target.y = minCameraY;
+        if (camera.target.y > maxCameraY) camera.target.y = maxCameraY;
     }
     else {
         //  รีเซ็ตเกมเมื่อกดปุ่ม R  
