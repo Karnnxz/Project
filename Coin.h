@@ -12,7 +12,7 @@ public:
     void Collect();
     Rectangle GetRec() const;
     void Reset();
-    void SetPosition(float x, float y); 
+    void SetPosition(float x, float y);
 
 private:
     Rectangle rec;
