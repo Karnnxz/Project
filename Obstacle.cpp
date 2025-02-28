@@ -57,11 +57,11 @@ void Obstacle::Draw() {
 
 Rectangle Obstacle::GetRec() const {
 
-        float hitboxMarginX = 10.0f;  // ลดขนาดขอบด้านข้าง
-        float hitboxMarginY = 5.0f;   // ลดขนาดขอบด้านบน-ล่าง
-        return { rec.x + hitboxMarginX, rec.y + hitboxMarginY,
-                 rec.width - 2 * hitboxMarginX, rec.height - 2 * hitboxMarginY };
-    
+    float hitboxMarginX = 10.0f;  // ลดขนาดขอบด้านข้าง
+    float hitboxMarginY = 5.0f;   // ลดขนาดขอบด้านบน-ล่าง
+    return { rec.x + hitboxMarginX, rec.y + hitboxMarginY,
+             rec.width - 2 * hitboxMarginX, rec.height - 2 * hitboxMarginY };
+
 
 }
 
@@ -79,4 +79,3 @@ void Obstacle::Reset(float x, float y) {
     rec.x = x;
     movingRight = true;
 }
-
