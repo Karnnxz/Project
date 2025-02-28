@@ -69,7 +69,7 @@ void Player::Update() {
         rec.y = GROUND_Y - rec.height;
         velocity.y = 0;
         isJumping = false;
-		jumpCount = 0;  // รีเซ็ตจำนวนครั้งที่กระโดด
+        jumpCount = 0;  // รีเซ็ตจำนวนครั้งที่กระโดด
     }
 
     // อัปเดตแอนิเมชันเมื่อเคลื่อนที่
@@ -103,7 +103,8 @@ void Player::Draw() {
 
         DrawTexturePro(textures[currentFrame], sourceRec, destRec, origin, 0.0f, WHITE);
 
-    } else {
+    }
+    else {
         DrawRectangleRec(rec, RED);
     }
 }
