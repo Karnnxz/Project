@@ -7,8 +7,7 @@
 #include "TextRenderer.h"
 
 #define GROUND_Y 450
-#define GROUND_HEIGHT 80
-#define COIN_COUNT 5
+#define COIN_COUNT 20
 #define MAP_LENGTH 2000  // Define the length of the map
 
 TextRenderer textRenderer;
@@ -21,6 +20,7 @@ void UpdateDrawFrame(ScreenController& screenController, float& time, int& score
     screenController.Draw(score, gameOver);
     EndDrawing();
 }
+
 
 int main() {
     const int screenWidth = 800;
@@ -35,11 +35,11 @@ int main() {
     }
 
     Player player(100, GROUND_Y - 80);
-     Coin coins[COIN_COUNT] = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
- , {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130}, {1250, GROUND_Y - 130}
- , {1350, GROUND_Y - 130} , {1500, GROUND_Y - 220} , {1550, GROUND_Y - 220} , {1600, GROUND_Y - 220} , {1650, GROUND_Y - 220} 
- , {1700, GROUND_Y - 130} , {1750, GROUND_Y - 130} , {1800, GROUND_Y - 130} , {1850, GROUND_Y - 130} , {1900, GROUND_Y - 220}
- , {1900, GROUND_Y - 350} };
+    Coin coins[COIN_COUNT] = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
+, {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130}, {1250, GROUND_Y - 130}
+, {1350, GROUND_Y - 130} , {1500, GROUND_Y - 220} , {1550, GROUND_Y - 220} , {1600, GROUND_Y - 220} , {1650, GROUND_Y - 220}
+, {1700, GROUND_Y - 130} , {1750, GROUND_Y - 130} , {1800, GROUND_Y - 130} , {1850, GROUND_Y - 130} , {1900, GROUND_Y - 220}
+, {1900, GROUND_Y - 350} };
     Obstacle obstacle(500, GROUND_Y - 50);
 
     int score = 0;
