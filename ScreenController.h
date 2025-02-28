@@ -16,6 +16,9 @@ public:
     void Draw(int score, bool gameOver);
 
 private:
+    float messageTimer = 0.0f;
+    bool showLevelUpMessage = false;
+    int level = 1;
     const float mapStartX = 0;
     const float mapEndX = MAP_LENGTH;
     int screenWidth;
