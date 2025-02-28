@@ -27,6 +27,13 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
     if (!gameOver) {
         player.Update();
 
+        if (showLevelUpMessage) {
+            messageTimer -= GetFrameTime();
+            if (messageTimer <= 0) {
+                showLevelUpMessage = false;
+            }
+        }
+
         // จำกัดการเคลื่อนที่ของผู้เล่นให้อยู่ในขอบเขตแมพ
         float playerNextX = player.GetRec().x + player.GetVelocity().x; // ดูตำแหน่งถัดไปของ player
 
@@ -63,14 +70,20 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
         time += 0.05f;
 
         if (score == 100 && backgroundState == 1) {
-            score = 0;  // รีเซ็ตคะแนน
+            //score = 0;  // รีเซ็ตคะแนน
             time = 0.0f;  // รีเซ็ตเวลา
             gameOver = false;  // รีเซ็ตสถานะเกม
             backgroundState = 2;  // เปลี่ยนสถานะพื้นหลัง
+            level++;  // เพิ่มระดับด่าน
 
+            // ⭐ แสดงข้อความ "Great!" เป็นเวลา 2 วินาที
+            showLevelUpMessage = true;
+            messageTimer = 2.0f;
+           
             // โหลดพื้นหลังใหม่
             UnloadTexture(background);
-            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
+            
+            background = LoadTexture("../../../../AssetsCompro/Monster/background.png");
 
             // รีเซ็ตค่าของ Player
             player.SetGameOver(false);
@@ -124,21 +137,14 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
 
 void ScreenController::Draw(int score, bool gameOver) {
     ClearBackground(RAYWHITE);
-
-    // 🔹 วาดพื้นหลังในตำแหน่งคงที่บนหน้าจอ
     DrawTextureEx(background, Vector2{ 0, 0 }, 0.0f, (float)screenWidth / background.width, WHITE);
 
     BeginMode2D(camera);
-    //DrawRectangle(0, GROUND_Y, MAP_LENGTH, GROUND_HEIGHT, DARKBROWN);
-
-
-
     player.Draw();
     for (int i = 0; i < coinCount; i++) {
         coins[i].Draw();
     }
     obstacle.Draw();
-
     EndMode2D();
 
     TextRenderer textRenderer;
@@ -147,5 +153,11 @@ void ScreenController::Draw(int score, bool gameOver) {
     }
     else {
         textRenderer.DrawScore(score);
+
+        // ⭐ แสดงกล่องข้อความ "Great!" เมื่อเปลี่ยนด่าน
+        if (showLevelUpMessage) {
+            DrawRectangle(screenWidth / 2 - 90, screenHeight / 2 - 50, 200, 100, Fade(YELLOW, 0.5f));
+            DrawText("Great!", screenWidth / 2 - 50, screenHeight / 2 - 20, 40, WHITE);
+        }
     }
 }
