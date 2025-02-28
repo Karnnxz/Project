@@ -6,8 +6,8 @@
 #include "Obstacle.h"
 #include <cmath>
 
-#define GROUND_Y 480 
-#define MAP_LENGTH 800
+#define GROUND_Y 450 
+#define MAP_LENGTH 2000 
 // #define GROUND_HEIGHT 150 
 
 ScreenController::ScreenController(int screenWidth, int screenHeight, Player& player, Coin* coins, int coinCount, Obstacle& obstacle, Texture2D& background)
@@ -19,78 +19,107 @@ ScreenController::ScreenController(int screenWidth, int screenHeight, Player& pl
 }
 
 
+
 ScreenController::~ScreenController() {
 }
 
 void ScreenController::Update(float& time, int& score, bool& gameOver) {
     if (!gameOver) {
         player.Update();
+
+        // จำกัดการเคลื่อนที่ของผู้เล่นให้อยู่ในขอบเขตแมพ
+        float playerNextX = player.GetRec().x + player.GetVelocity().x; // ดูตำแหน่งถัดไปของ player
+
+        if (playerNextX < mapStartX) {
+            player.SetPosition(mapStartX, player.GetRec().y);
+        }
+        if (playerNextX + player.GetRec().width > mapEndX) {
+            player.SetPosition(mapEndX - player.GetRec().width, player.GetRec().y);
+        }
+
+
+        // อัปเดตเหรียญ
         for (int i = 0; i < coinCount; i++) {
             coins[i].SetPosition(coins[i].GetRec().x, GROUND_Y - 180 + 50 * sin(time + i));
             coins[i].Update();
         }
+
+        // อัปเดตอุปสรรค
         obstacle.Update();
 
+        // ตรวจสอบการชนกับเหรียญ
         for (int i = 0; i < coinCount; i++) {
             if (!coins[i].IsCollected() && CheckCollisionRecs(player.GetRec(), coins[i].GetRec())) {
                 coins[i].Collect();
-                score += 10;
+                score += 5;
             }
         }
 
-        // เปลี่ยนพื้นหลังเมื่อคะแนนถึง 25
-        if (score >= 25 && backgroundState == 1) {
-            UnloadTexture(background);
-            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
-            backgroundState = 2;  // อัปเดตสถานะพื้นหลัง
-        }
-
-        // เปลี่ยนพื้นหลังเมื่อคะแนนถึง 50
-        if (score >= 50 && backgroundState == 2) {
-            UnloadTexture(background);
-            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background3.png");
-            backgroundState = 3;  // อัปเดตสถานะพื้นหลัง
-        }
-
-        Rectangle playerRec = player.GetRec();
-        Rectangle obstacleRec = obstacle.GetRec();
-
-        Vector2 playerCenter = { playerRec.x + playerRec.width / 2, playerRec.y + playerRec.height / 2 };
-        Vector2 obstacleCenter = { obstacleRec.x + obstacleRec.width / 2, obstacleRec.y + obstacleRec.height / 2 };
-
-        float distance = static_cast<float>(sqrt(pow(playerCenter.x - obstacleCenter.x, 2) + pow(playerCenter.y - obstacleCenter.y, 2)));
-        float collisionThreshold = 10.0f;
-
-        if (CheckCollisionRecs(playerRec, obstacleRec) || distance < collisionThreshold) {
-            TraceLog(LOG_INFO, "Collision Detected! Distance: %.2f", distance);
+        // ตรวจสอบการชนกับอุปสรรค
+        if (CheckCollisionRecs(player.GetRec(), obstacle.GetRec())) {
             gameOver = true;
         }
 
         time += 0.05f;
-        camera.target = Vector2{ player.GetRec().x + player.GetRec().width / 2, player.GetRec().y + player.GetRec().height / 2 };
+
+        if (score == 100 && backgroundState == 1) {
+            score = 0;  // รีเซ็ตคะแนน
+            time = 0.0f;  // รีเซ็ตเวลา
+            gameOver = false;  // รีเซ็ตสถานะเกม
+            backgroundState = 2;  // เปลี่ยนสถานะพื้นหลัง
+
+            // โหลดพื้นหลังใหม่
+            UnloadTexture(background);
+            background = LoadTexture("../../../../AssetsCompro/Monster/background2.jpg");
+
+            // รีเซ็ตค่าของ Player
+            player.SetGameOver(false);
+            player.Reset(100, GROUND_Y - 80);
+
+
+            // รีเซ็ตอุปสรรค
+            obstacle = Obstacle(500, GROUND_Y - 50);
+        }
+
+
+        // จำกัดการเลื่อนของกล้อง
+        float playerCenterX = player.GetRec().x + player.GetRec().width / 2;
+        float cameraMinX = screenWidth / 2;
+        float cameraMaxX = mapEndX - screenWidth / 2;
+
+        camera.target.x = fmax(cameraMinX, fmin(playerCenterX, cameraMaxX));
+        camera.target.y = player.GetRec().y + player.GetRec().height / 2 - 60;
+
     }
     else {
+        //  รีเซ็ตเกมเมื่อกดปุ่ม R  
         if (IsKeyPressed(KEY_R)) {
             score = 0;
             gameOver = false;
-            backgroundState = 1;  // รีเซ็ตพื้นหลังกลับไปที่ Background1
-            UnloadTexture(background);
-            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background.png");
+            time = 0.0f;
+
+            // รีเซ็ตค่าของ Player
             player.SetGameOver(false);
             player.Reset(100, GROUND_Y - 80);
+
+            // รีเซ็ตเหรียญทั้งหมด
             for (int i = 0; i < coinCount; i++) {
                 coins[i].Reset();
             }
-            obstacle = Obstacle(600, GROUND_Y - 80);
+
+            // รีเซ็ตอุปสรรค  
+            obstacle = Obstacle(500, GROUND_Y - 50);
         }
     }
 }
 
-void ScreenController::Draw(int score, bool gameOver) {
-    ClearBackground(RAYWHITE);  // ลบ BeginDrawing() ออกไป
-    DrawTextureEx(background, Vector2{ 0, 0 }, 0.0f, (float)screenWidth / background.width, WHITE);
-    // 🟩 วาดพื้นดินให้มีความยาวเท่ากับ MAP_LENGTH
 
+
+void ScreenController::Draw(int score, bool gameOver) {
+    ClearBackground(RAYWHITE);
+
+    // 🔹 วาดพื้นหลังในตำแหน่งคงที่บนหน้าจอ
+    DrawTextureEx(background, Vector2{ 0, 0 }, 0.0f, (float)screenWidth / background.width, WHITE);
 
     BeginMode2D(camera);
     //DrawRectangle(0, GROUND_Y, MAP_LENGTH, GROUND_HEIGHT, DARKBROWN);
