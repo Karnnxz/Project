@@ -29,7 +29,7 @@ int main() {
 
     SetTargetFPS(60);
 
-    Texture2D background = LoadTexture("../../../../AssetsCompro/Monster/background.png");
+    Texture2D background = LoadTexture("../../../../AssetsCompro/Monster/background3.jpg");
     if (background.id == 0) {
         TraceLog(LOG_ERROR, "Failed to load background texture!");
     }
