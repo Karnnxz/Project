@@ -20,8 +20,8 @@ Player::Player(float x, float y) {
     scaleX = 1.0f;
 
     // ตรวจสอบว่าไฟล์ภาพที่โหลดตรงกันหรือไม่
-    textures[0] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/01.png");
-    textures[1] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/02.png");
+    textures[0] = LoadTexture("../../../../AssetsCompro/Charact/CharLevel01/walk/Player.png");
+    textures[1] = LoadTexture("../../../../AssetsCompro/Charact/CharLevel01/walk/01.png");
 
     currentFrame = 0;
     frameCounter = 0;
@@ -44,11 +44,14 @@ void Player::Unload() {
 }
 
 void Player::Update() {
-    float deltaTime = GetFrameTime();
+    float deltaTime = GetFrameTime();  // ใช้ deltaTime เพื่อให้การเคลื่อนที่ลื่นขึ้น
 
+    // อัปเดตความเร็วของตัวละคร (หากกด A หรือ D)
     velocity.x = (IsKeyDown(KEY_D) - IsKeyDown(KEY_A)) * PLAYER_SPEED;
 
-    // ✅ อนุญาตให้กระโดดสองครั้ง
+    // ตรวจสอบว่าค่าความเร็วเปลี่ยนแปลงหรือไม่
+    TraceLog(LOG_INFO, "Velocity X: %.2f", velocity.x);
+
     if ((IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_W) || IsKeyPressed(KEY_ENTER)) && jumpCount < maxJumps) {
         velocity.y = -PLAYER_JUMP_SPEED;
         isJumping = true;
@@ -56,17 +59,20 @@ void Player::Update() {
     }
 
     velocity.y += PLAYER_GRAVITY;
-    rec.x += velocity.x * deltaTime * 60;
+
+    // อัปเดตตำแหน่งของตัวละคร
+    rec.x += velocity.x * deltaTime * 60;  // ใช้ deltaTime ปรับให้ความเร็วสม่ำเสมอ
     rec.y += velocity.y * deltaTime * 60;
 
-    // ✅ รีเซ็ตการกระโดดเมื่อแตะพื้น
+    // ตรวจสอบว่าตัวละครอยู่ที่พื้นหรือไม่
     if (rec.y + rec.height >= GROUND_Y) {
         rec.y = GROUND_Y - rec.height;
         velocity.y = 0;
         isJumping = false;
-        jumpCount = 0;  // รีเซ็ต jumpCount
+		jumpCount = 0;  // รีเซ็ตจำนวนครั้งที่กระโดด
     }
 
+    // อัปเดตแอนิเมชันเมื่อเคลื่อนที่
     if (velocity.x != 0) {
         frameCounter++;
         if (frameCounter >= 15) {
@@ -78,6 +84,7 @@ void Player::Update() {
         currentFrame = 0;
     }
 
+    // กำหนดทิศทางของตัวละคร (ซ้ายหรือขวา)
     if (velocity.x < 0) {
         scaleX = -1;
     }
@@ -85,7 +92,6 @@ void Player::Update() {
         scaleX = 1;
     }
 }
-
 
 
 
@@ -97,10 +103,14 @@ void Player::Draw() {
 
         DrawTexturePro(textures[currentFrame], sourceRec, destRec, origin, 0.0f, WHITE);
 
-    }
-    else {
+    } else {
         DrawRectangleRec(rec, RED);
     }
+}
+
+void Player::SetPosition(float x, float y) {
+    rec.x = x;
+    rec.y = y;
 }
 
 
@@ -120,11 +130,15 @@ void Player::Reset(float x, float y) {
     rec.y = y;
     velocity = Vector2{ 0, 0 };
     isJumping = false;
-    currentFrame = 0;   
+    currentFrame = 0;
     frameCounter = 0;
     scaleX = 1.0f;
 }
 
 void Player::SetGameOver(bool gameOver) {
     isGameOver = gameOver;
+}
+
+Vector2 Player::GetVelocity() const {
+    return velocity;
 }
