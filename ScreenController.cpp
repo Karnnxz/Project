@@ -10,14 +10,20 @@
 #define MAP_LENGTH 2000 
 // #define GROUND_HEIGHT 150 
 
-ScreenController::ScreenController(int screenWidth, int screenHeight, Player& player, Coin* coins, int coinCount, Obstacle& obstacle, Texture2D& background)
-    : screenWidth(screenWidth), screenHeight(screenHeight), player(player), coins(coins), coinCount(coinCount), obstacle(obstacle), background(background), groundTile{} {
+ScreenController::ScreenController(int screenWidth, int screenHeight, Player& player, Coin* coins, int coinCount, Obstacle& obstacle, std::vector<Texture2D>& backgrounds, std::vector<Texture2D>& coinPatterns, Texture2D coinTexture)
+    : screenWidth(screenWidth), screenHeight(screenHeight), player(player), coins(coins), coinCount(coinCount), obstacle(obstacle), backgrounds(), coinPatterns(), coinTexture(coinTexture), background(backgrounds[0]) {
     camera.target = Vector2{ player.GetRec().x + player.GetRec().width / 2, player.GetRec().y + player.GetRec().height / 2 };
     camera.offset = Vector2{ screenWidth / 2.0f, screenHeight / 2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
-}
 
+    // Initialize backgrounds array
+    this->backgrounds[0] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background1.png");
+    this->backgrounds[1] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
+    this->backgrounds[2] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background3.png");
+
+    SetCoinPattern(backgroundState); // เรียกใช้เมื่อเริ่มเกม
+}
 
 
 ScreenController::~ScreenController() {
@@ -70,29 +76,26 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
         time += 0.05f;
 
         if (score == 100 && backgroundState == 1) {
-            //score = 0;  // รีเซ็ตคะแนน
-            time = 0.0f;  // รีเซ็ตเวลา
-            gameOver = false;  // รีเซ็ตสถานะเกม
-            backgroundState = 2;  // เปลี่ยนสถานะพื้นหลัง
-            level++;  // เพิ่มระดับด่าน
+            time = 0.0f;
+            gameOver = false;
+            backgroundState = 2;
+            level++;
 
-            // ⭐ แสดงข้อความ "Great!" เป็นเวลา 2 วินาที
             showLevelUpMessage = true;
             messageTimer = 2.0f;
-           
-            // โหลดพื้นหลังใหม่
-            UnloadTexture(background);
-            
-            background = LoadTexture("../../../../AssetsCompro/Monster/background.png");
 
-            // รีเซ็ตค่าของ Player
+            UnloadTexture(background);
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background.png");
+
             player.SetGameOver(false);
             player.Reset(100, GROUND_Y - 80);
 
-
-            // รีเซ็ตอุปสรรค
             obstacle = Obstacle(500, GROUND_Y - 50);
+
+            // ⭐ เปลี่ยนรูปแบบการวางเหรียญ
+            SetCoinPattern(backgroundState);
         }
+
 
 
         // จำกัดการเลื่อนของกล้อง
@@ -133,8 +136,6 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
     }
 }
 
-
-
 void ScreenController::Draw(int score, bool gameOver) {
     ClearBackground(RAYWHITE);
     DrawTextureEx(background, Vector2{ 0, 0 }, 0.0f, (float)screenWidth / background.width, WHITE);
@@ -142,7 +143,7 @@ void ScreenController::Draw(int score, bool gameOver) {
     BeginMode2D(camera);
     player.Draw();
     for (int i = 0; i < coinCount; i++) {
-        coins[i].Draw();
+        coins[i].Draw(coinTexture);
     }
     obstacle.Draw();
     EndMode2D();
@@ -160,4 +161,45 @@ void ScreenController::Draw(int score, bool gameOver) {
             DrawText("Great!", screenWidth / 2 - 50, screenHeight / 2 - 20, 40, WHITE);
         }
     }
+}
+
+void ScreenController::SetCoinPattern(int backgroundState) {
+    switch (backgroundState) {
+    case 1: // รูปแบบของด่านแรก
+        for (int i = 0; i < coinCount; i++) {
+            coins[i].SetPosition(200 + (i % 5) * 150, GROUND_Y - 220 + (i % 4) * 60);
+        }
+        break;
+    case 2: // รูปแบบของด่านที่สอง
+        for (int i = 0; i < coinCount; i++) {
+            coins[i].SetPosition(200 + (i % 5) * 150, GROUND_Y - 220 + (i % 4) * 60);
+        }
+        break;
+    default: // รูปแบบเริ่มต้น
+        for (int i = 0; i < coinCount; i++) {
+            coins[i].SetPosition(100 + i * 80, GROUND_Y - 180);
+        }
+        break;
+    }
+}
+
+void ScreenController::ChangeLevel(float& time, int& score, bool& gameOver) {
+    time = 0.0f;
+    gameOver = false;
+    backgroundState = 2;
+    level++;
+
+    showLevelUpMessage = true;
+    messageTimer = 2.0f;
+
+    player.SetGameOver(false);
+    player.Reset(100, GROUND_Y - 80);
+
+    obstacle = Obstacle(500, GROUND_Y - 50);
+
+    //เพิ่มส่วนนี้เพื่อเปลี่ยน texture เหรียญ
+    background = backgrounds[backgroundState - 1];
+    coinTexture = coinPatterns[backgroundState - 1];
+
+    SetCoinPattern(backgroundState);
 }
