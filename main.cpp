@@ -5,6 +5,7 @@
 #include "ScreenController.h"
 #include <cmath>
 #include "TextRenderer.h"
+#include <vector>
 
 #define GROUND_Y 450
 #define COIN_COUNT 20
@@ -21,7 +22,6 @@ void UpdateDrawFrame(ScreenController& screenController, float& time, int& score
     EndDrawing();
 }
 
-
 int main() {
     const int screenWidth = 800;
     const int screenHeight = 450;
@@ -29,7 +29,7 @@ int main() {
 
     SetTargetFPS(60);
 
-    Texture2D background = LoadTexture("../../../../AssetsCompro/Monster/background3.jpg");
+    Texture2D background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background1.png");
     if (background.id == 0) {
         TraceLog(LOG_ERROR, "Failed to load background texture!");
     }
@@ -46,7 +46,15 @@ int main() {
     bool gameOver = false;
     float time = 0.0f;
 
-    ScreenController screenController(screenWidth, screenHeight, player, coins, COIN_COUNT, obstacle, background);
+    Image coinImage = GenImageColor(20, 20, BLANK); // สร้าง Image โปร่งใส
+    ImageDrawCircle(&coinImage, 10, 10, 10, GOLD); // วาดวงกลมสีทอง
+    Texture2D coinTexture = LoadTextureFromImage(coinImage); // แปลง Image เป็น Texture
+    UnloadImage(coinImage); // ลบ Image เมื่อไม่ใช้งานแล้ว
+
+    std::vector<Texture2D> backgrounds = { background }; // Add this line
+    std::vector<Texture2D> coinPatterns = { coinTexture }; // Add this line
+
+    ScreenController screenController(screenWidth, screenHeight, player, coins, COIN_COUNT, obstacle, backgrounds, coinPatterns, coinTexture);
 
     while (!WindowShouldClose()) {
         UpdateDrawFrame(screenController, time, score, gameOver, background);
