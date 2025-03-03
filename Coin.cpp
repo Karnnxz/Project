@@ -10,9 +10,11 @@ void Coin::Update() {
     }
 }
 
-void Coin::Draw() {
+void Coin::Draw(Texture2D texture) {
     if (!collected) {
-        DrawCircle(rec.x + rec.width / 2, rec.y + rec.height / 2, rec.width / 2, GOLD);
+        Vector2 position = { rec.x, rec.y }; // Define the position variable
+        TraceLog(LOG_INFO, "Drawing coin at (%f, %f)", position.x, position.y);
+        DrawTextureRec(texture, { 0, 0, (float)texture.width, (float)texture.height }, position, WHITE);
     }
 }
 
