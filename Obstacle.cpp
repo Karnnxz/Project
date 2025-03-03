@@ -5,7 +5,7 @@
 // Obstacle.cpp
 Obstacle::Obstacle(float x, float y) {
     float scaleFactor = 0.1f; // ปรับขนาดใหม่
-    texture = LoadTexture("../../../../AssetsCompro/Monster/MonsterB.png");
+    texture = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/MonsterB.png");
 
     if (texture.id == 0) {
         TraceLog(LOG_ERROR, "Failed to load obstacle texture!");
