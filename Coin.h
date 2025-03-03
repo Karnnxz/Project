@@ -7,7 +7,7 @@ class Coin {
 public:
     Coin(float x, float y);
     void Update();
-    void Draw();
+    void Draw(Texture2D texture);
     bool IsCollected() const;
     void Collect();
     Rectangle GetRec() const;
