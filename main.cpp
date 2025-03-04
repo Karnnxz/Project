@@ -29,12 +29,12 @@ int main() {
 
     SetTargetFPS(60);
 
-    Texture2D background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background1.png");
+    Texture2D background = LoadTexture("../../../../AssetsCompro/Monster/background3.jpg");
     if (background.id == 0) {
         TraceLog(LOG_ERROR, "Failed to load background texture!");
     }
 
-    Player player(100, GROUND_Y - 80);
+    Player player(60, GROUND_Y - 80);
     Coin coins[COIN_COUNT] = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
 , {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130}, {1250, GROUND_Y - 130}
 , {1350, GROUND_Y - 130} , {1500, GROUND_Y - 220} , {1550, GROUND_Y - 220} , {1600, GROUND_Y - 220} , {1650, GROUND_Y - 220}
