@@ -5,7 +5,7 @@
 #include "Coin.h"
 #include "Obstacle.h"
 #include <cmath>
-
+#include <iostream>
 #define GROUND_Y 450 
 #define MAP_LENGTH 2000 
 // #define GROUND_HEIGHT 150 
@@ -16,11 +16,11 @@ ScreenController::ScreenController(int screenWidth, int screenHeight, Player& pl
     camera.offset = Vector2{ screenWidth / 2.0f, screenHeight / 2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
-
+    
     // Initialize backgrounds array
-    this->backgrounds[0] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background1.png");
-    this->backgrounds[1] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
-    this->backgrounds[2] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background3.png");
+    this->backgrounds[0] = LoadTexture("../../../../AssetsCompro/Monster/background3.jpg");
+    this->backgrounds[1] = LoadTexture("../../../../AssetsCompro/Monster/background.png");
+    this->backgrounds[2] = LoadTexture("../../../../AssetsCompro/Monster/background2.jpg");
 
     SetCoinPattern(backgroundState); // เรียกใช้เมื่อเริ่มเกม
 }
@@ -61,12 +61,13 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
         obstacle.Update();
 
         // ตรวจสอบการชนกับเหรียญ
-        for (int i = 0; i < coinCount; i++) {
-            if (!coins[i].IsCollected() && CheckCollisionRecs(player.GetRec(), coins[i].GetRec())) {
-                coins[i].Collect();
-                score += 5;
-            }
-        }
+   
+		for (int i = 0; i < coinCount; i++) {
+			if (!coins[i].IsCollected() && CheckCollisionRecs(player.GetRec(), coins[i].GetRec())) {
+				coins[i].Collect();
+				score += 5;
+			}
+		}
 
         // ตรวจสอบการชนกับอุปสรรค
         if (CheckCollisionRecs(player.GetRec(), obstacle.GetRec())) {
@@ -85,7 +86,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             messageTimer = 2.0f;
 
             UnloadTexture(background);
-            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background.png");
+            background = LoadTexture("../../../../AssetsCompro/Monster/background.png");
 
             player.SetGameOver(false);
             player.Reset(100, GROUND_Y - 80);
@@ -164,29 +165,40 @@ void ScreenController::Draw(int score, bool gameOver) {
 }
 
 void ScreenController::SetCoinPattern(int backgroundState) {
-    switch (backgroundState) {
-    case 1: // รูปแบบของด่านแรก
-        for (int i = 0; i < coinCount; i++) {
-            coins[i].SetPosition(200 + (i % 5) * 150, GROUND_Y - 220 + (i % 4) * 60);
-        }
-        break;
-    case 2: // รูปแบบของด่านที่สอง
-        for (int i = 0; i < coinCount; i++) {
-            coins[i].SetPosition(200 + (i % 5) * 150, GROUND_Y - 220 + (i % 4) * 60);
-        }
-        break;
-    default: // รูปแบบเริ่มต้น
-        for (int i = 0; i < coinCount; i++) {
-            coins[i].SetPosition(100 + i * 80, GROUND_Y - 180);
-        }
-        break;
+    // กำหนดตำแหน่งเหรียญล่วงหน้าแบบไม่มีการซ้อนทับ
+    std::vector<Vector2> coinPositions;
+
+    if (backgroundState == 1) {
+        coinPositions = {
+    {200, GROUND_Y - 220}, {350, GROUND_Y - 180}, {500, GROUND_Y - 220}, {650, GROUND_Y - 260},
+    {800, GROUND_Y - 310}, {900, GROUND_Y - 280}, {1000, GROUND_Y - 250}, {1200, GROUND_Y - 290},
+    {1300, GROUND_Y - 270}, {1400, GROUND_Y - 220}, {1500, GROUND_Y - 200}, {1650, GROUND_Y - 240},
+    {1750, GROUND_Y - 260}, {1800, GROUND_Y - 210}, {1900, GROUND_Y - 200}
+        };
+    }
+    else if (backgroundState == 2) {
+        coinPositions = {
+            {250, GROUND_Y - 200}, {400, GROUND_Y - 250}, {550, GROUND_Y - 200}, {700, GROUND_Y - 300},
+            {850, GROUND_Y - 250}, {250, GROUND_Y - 300}, {400, GROUND_Y - 300}, {550, GROUND_Y - 300},
+            {700, GROUND_Y - 250}, {850, GROUND_Y - 200}, {250, GROUND_Y - 200}, {400, GROUND_Y - 250},
+            {550, GROUND_Y - 250}, {700, GROUND_Y - 250}, {850, GROUND_Y - 100}
+        };
+    }
+
+    // นำตำแหน่งที่กำหนดไปใช้กับเหรียญ
+    for (int i = 0; i < coinCount && i < coinPositions.size(); i++) {
+        coins[i].Reset();
+        coins[i].SetPosition(coinPositions[i].x, coinPositions[i].y);
     }
 }
 
+
 void ScreenController::ChangeLevel(float& time, int& score, bool& gameOver) {
+    std::cout << "Changing level to: " << (backgroundState + 1) << std::endl;
+
     time = 0.0f;
     gameOver = false;
-    backgroundState = 2;
+    backgroundState++;
     level++;
 
     showLevelUpMessage = true;
@@ -197,9 +209,11 @@ void ScreenController::ChangeLevel(float& time, int& score, bool& gameOver) {
 
     obstacle = Obstacle(500, GROUND_Y - 50);
 
-    //เพิ่มส่วนนี้เพื่อเปลี่ยน texture เหรียญ
+    // โหลด Background และ Texture ใหม่
     background = backgrounds[backgroundState - 1];
     coinTexture = coinPatterns[backgroundState - 1];
 
+    std::cout << "Calling SetCoinPattern(" << backgroundState << ")" << std::endl;
     SetCoinPattern(backgroundState);
+
 }
