@@ -96,7 +96,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             // ⭐ เปลี่ยนรูปแบบการวางเหรียญ
             SetCoinPattern(backgroundState);
         }
-        else if (score == 175 && backgroundState == 2) { //ด่าน2ไป3
+        else if (score == 200 && backgroundState == 2) { //ด่าน2ไป3
             time = 0.0f;
             gameOver = false;
             backgroundState = 3;
@@ -143,7 +143,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
                 score = 100;
             }
             else if (backgroundState == 3) {
-                score = 175;
+                score = 200;
             }
             else {
                 score = 0;
@@ -198,28 +198,27 @@ void ScreenController::SetCoinPattern(int backgroundState) {
     std::vector<Vector2> coinPositions;
 
     if (backgroundState == 1) {
-        coinPositions = {
-    {200, GROUND_Y - 220}, {350, GROUND_Y - 180}, {500, GROUND_Y - 220}, {650, GROUND_Y - 260},
-    {800, GROUND_Y - 310}, {900, GROUND_Y - 280}, {1000, GROUND_Y - 250}, {1200, GROUND_Y - 290},
-    {1300, GROUND_Y - 270}, {1400, GROUND_Y - 220}, {1500, GROUND_Y - 200}, {1650, GROUND_Y - 240},
-    {1750, GROUND_Y - 260}, {1800, GROUND_Y - 210}, {1900, GROUND_Y - 200}
-        };
+        coinPositions = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
+, {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130}, {1250, GROUND_Y - 130}
+, {1350, GROUND_Y - 130} , {1500, GROUND_Y - 220} , {1550, GROUND_Y - 220} , {1600, GROUND_Y - 220} , {1650, GROUND_Y - 220}
+, {1700, GROUND_Y - 130} , {1750, GROUND_Y - 130} , {1800, GROUND_Y - 130} , {1850, GROUND_Y - 130} , {1900, GROUND_Y - 220}
+, {1900, GROUND_Y - 350} };
     }
     else if (backgroundState == 2) {
-        coinPositions = {
-            {250, GROUND_Y - 200}, {400, GROUND_Y - 250}, {550, GROUND_Y - 200}, {700, GROUND_Y - 300},
-            {850, GROUND_Y - 250}, {250, GROUND_Y - 300}, {400, GROUND_Y - 300}, {550, GROUND_Y - 300},
-            {700, GROUND_Y - 250}, {850, GROUND_Y - 200}, {250, GROUND_Y - 200}, {400, GROUND_Y - 250},
-            {550, GROUND_Y - 250}, {700, GROUND_Y - 250}, {850, GROUND_Y - 100}
-        };
+        coinCount = 20;
+        coinPositions = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
+, {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130}, {1250, GROUND_Y - 130}
+, {1350, GROUND_Y - 130} , {1500, GROUND_Y - 220} , {1550, GROUND_Y - 220} , {1600, GROUND_Y - 220} , {1650, GROUND_Y - 220}
+, {1700, GROUND_Y - 130} , {1750, GROUND_Y - 130} , {1800, GROUND_Y - 130} , {1850, GROUND_Y - 130} , {1900, GROUND_Y - 220}
+, {1900, GROUND_Y - 350} };
     }
     else if (backgroundState == 3) {
-        coinPositions = {
-            {250, GROUND_Y - 200}, {400, GROUND_Y - 250}, {550, GROUND_Y - 200}, {700, GROUND_Y - 300},
-            {850, GROUND_Y - 250}, {250, GROUND_Y - 300}, {400, GROUND_Y - 300}, {550, GROUND_Y - 300},
-            {700, GROUND_Y - 250}, {850, GROUND_Y - 200}, {250, GROUND_Y - 200}, {400, GROUND_Y - 250},
-            {550, GROUND_Y - 250}, {700, GROUND_Y - 250}, {850, GROUND_Y - 100}
-        };
+        coinCount = 20;
+        coinPositions = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
+, {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130}, {1250, GROUND_Y - 130}
+, {1350, GROUND_Y - 130} , {1500, GROUND_Y - 220} , {1550, GROUND_Y - 220} , {1600, GROUND_Y - 220} , {1650, GROUND_Y - 220}
+, {1700, GROUND_Y - 130} , {1750, GROUND_Y - 130} , {1800, GROUND_Y - 130} , {1850, GROUND_Y - 130} , {1900, GROUND_Y - 220}
+, {1900, GROUND_Y - 350} };
     }
 
     // นำตำแหน่งที่กำหนดไปใช้กับเหรียญ
