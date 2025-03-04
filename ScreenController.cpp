@@ -50,6 +50,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             player.SetPosition(mapEndX - player.GetRec().width, player.GetRec().y);
         }
 
+
         // อัปเดตเหรียญ
         for (int i = 0; i < coinCount; i++) {
             coins[i].SetPosition(coins[i].GetRec().x, GROUND_Y - 180 + 50 * sin(time + i));
@@ -74,8 +75,8 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
         }
 
         time += 0.05f;
-
-        if (score == 100 && backgroundState == 1) {
+        //เงื่อนไขการเปลี่ยนด่าน
+        if (score == 100 && backgroundState == 1) { //ด่าน1ไป2
             time = 0.0f;
             gameOver = false;
             backgroundState = 2;
@@ -85,16 +86,37 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             messageTimer = 2.0f;
 
             UnloadTexture(background);
-            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background.png");
+            background = LoadTexture("../../../../AssetsCompro/Monster/background.png");
 
             player.SetGameOver(false);
-            player.Reset(100, GROUND_Y - 80);
+            player.Reset(60, GROUND_Y - 80);
 
-            obstacle = Obstacle(500, GROUND_Y - 50);
+            obstacle = Obstacle(800, GROUND_Y - 50);
 
             // ⭐ เปลี่ยนรูปแบบการวางเหรียญ
             SetCoinPattern(backgroundState);
         }
+        else if (score == 175 && backgroundState == 2) { //ด่าน2ไป3
+            time = 0.0f;
+            gameOver = false;
+            backgroundState = 3;
+            level++;
+
+            showLevelUpMessage = true;
+            messageTimer = 2.0f;
+
+            UnloadTexture(background);
+            background = LoadTexture("../../../../AssetsCompro/Monster/background2.jpg");
+
+            player.SetGameOver(false);
+            player.Reset(60, GROUND_Y - 80);
+
+            obstacle = Obstacle(1000, GROUND_Y - 50);
+
+            // ⭐ เปลี่ยนรูปแบบการวางเหรียญ
+            SetCoinPattern(backgroundState);
+        }
+
 
 
 
@@ -125,7 +147,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             }
             else {
                 score = 0;
-            }   
+            }
             gameOver = false;
             time = 0.0f;
 
@@ -184,6 +206,14 @@ void ScreenController::SetCoinPattern(int backgroundState) {
         };
     }
     else if (backgroundState == 2) {
+        coinPositions = {
+            {250, GROUND_Y - 200}, {400, GROUND_Y - 250}, {550, GROUND_Y - 200}, {700, GROUND_Y - 300},
+            {850, GROUND_Y - 250}, {250, GROUND_Y - 300}, {400, GROUND_Y - 300}, {550, GROUND_Y - 300},
+            {700, GROUND_Y - 250}, {850, GROUND_Y - 200}, {250, GROUND_Y - 200}, {400, GROUND_Y - 250},
+            {550, GROUND_Y - 250}, {700, GROUND_Y - 250}, {850, GROUND_Y - 100}
+        };
+    }
+    else if (backgroundState == 3) {
         coinPositions = {
             {250, GROUND_Y - 200}, {400, GROUND_Y - 250}, {550, GROUND_Y - 200}, {700, GROUND_Y - 300},
             {850, GROUND_Y - 250}, {250, GROUND_Y - 300}, {400, GROUND_Y - 300}, {550, GROUND_Y - 300},
