@@ -50,7 +50,6 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             player.SetPosition(mapEndX - player.GetRec().width, player.GetRec().y);
         }
 
-
         // อัปเดตเหรียญ
         for (int i = 0; i < coinCount; i++) {
             coins[i].SetPosition(coins[i].GetRec().x, GROUND_Y - 180 + 50 * sin(time + i));
@@ -122,7 +121,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
                 score = 100;
             }
             else if (backgroundState == 3) {
-                score = 200;
+                score = 175;
             }
             else {
                 score = 0;
@@ -132,7 +131,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
 
             // รีเซ็ตค่าของ Player
             player.SetGameOver(false);
-            player.Reset(100, GROUND_Y - 80);
+            player.Reset(60, GROUND_Y - 80);
 
             // รีเซ็ตเหรียญทั้งหมด
             for (int i = 0; i < coinCount; i++) {
@@ -223,5 +222,4 @@ void ScreenController::ChangeLevel(float& time, int& score, bool& gameOver) {
 
     std::cout << "Calling SetCoinPattern(" << backgroundState << ")" << std::endl;
     SetCoinPattern(backgroundState);
-
 }
