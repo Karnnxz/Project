@@ -16,11 +16,11 @@ ScreenController::ScreenController(int screenWidth, int screenHeight, Player& pl
     camera.offset = Vector2{ screenWidth / 2.0f, screenHeight / 2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
-    
+
     // Initialize backgrounds array
-    this->backgrounds[0] = LoadTexture("../../../../AssetsCompro/Monster/background3.jpg");
-    this->backgrounds[1] = LoadTexture("../../../../AssetsCompro/Monster/background.png");
-    this->backgrounds[2] = LoadTexture("../../../../AssetsCompro/Monster/background2.jpg");
+    this->backgrounds[0] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background1.png");
+    this->backgrounds[1] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
+    this->backgrounds[2] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background3.png");
 
     SetCoinPattern(backgroundState); // เรียกใช้เมื่อเริ่มเกม
 }
@@ -61,13 +61,13 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
         obstacle.Update();
 
         // ตรวจสอบการชนกับเหรียญ
-   
-		for (int i = 0; i < coinCount; i++) {
-			if (!coins[i].IsCollected() && CheckCollisionRecs(player.GetRec(), coins[i].GetRec())) {
-				coins[i].Collect();
-				score += 5;
-			}
-		}
+
+        for (int i = 0; i < coinCount; i++) {
+            if (!coins[i].IsCollected() && CheckCollisionRecs(player.GetRec(), coins[i].GetRec())) {
+                coins[i].Collect();
+                score += 5;
+            }
+        }
 
         // ตรวจสอบการชนกับอุปสรรค
         if (CheckCollisionRecs(player.GetRec(), obstacle.GetRec())) {
@@ -86,7 +86,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             messageTimer = 2.0f;
 
             UnloadTexture(background);
-            background = LoadTexture("../../../../AssetsCompro/Monster/background.png");
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background.png");
 
             player.SetGameOver(false);
             player.Reset(100, GROUND_Y - 80);
@@ -118,7 +118,15 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
     else {
         //  รีเซ็ตเกมเมื่อกดปุ่ม R  
         if (IsKeyPressed(KEY_R)) {
-            score = 0;
+            if (backgroundState == 2) {
+                score = 100;
+            }
+            else if (backgroundState == 3) {
+                score = 200;
+            }
+            else {
+                score = 0;
+            }   
             gameOver = false;
             time = 0.0f;
 
