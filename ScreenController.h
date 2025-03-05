@@ -6,7 +6,7 @@
 #include "Coin.h"
 #include "Obstacle.h"
 #include <vector>
-#define MAP_LENGTH 2000.0f
+#define MAP_LENGTH 2000
 
 class ScreenController {
 public:
@@ -33,8 +33,8 @@ private:
     Texture2D groundTile;
     bool backgroundChanged = false;
     int backgroundState = 1;  // 1 = พื้นหลังเริ่มต้น, 2 = พื้นหลังที่ 2, 3 = พื้นหลังที่ 3
-    Texture2D backgrounds[3];
-    Texture2D coinPatterns[3]; // Declare 
+    Texture2D backgrounds[5];
+    Texture2D coinPatterns[5]; // Declare 
     Texture2D coinTexture;
     void SetCoinPattern(int backgroundState);
 };
