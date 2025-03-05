@@ -3,6 +3,7 @@
 #include "Coin.h"
 #include "Obstacle.h"
 #include "ScreenController.h"
+#include "Button.h"
 #include <cmath>
 #include "TextRenderer.h"
 #include <vector>
@@ -34,12 +35,38 @@ int main() {
         TraceLog(LOG_ERROR, "Failed to load background texture!");
     }
 
+    // สร้างปุ่มเริ่มเกม
+    Button startButton("C:/Users/ADMIN/Downloads/start_button.png", { screenWidth / 2 - 100, screenHeight / 2 - 50 }, 1.0f);
+
+    bool gameStarted = false; // เพิ่มตัวแปรเพื่อตรวจสอบว่าเกมเริ่มหรือยัง
+
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+        DrawTexture(background, 0, 0, WHITE);
+
+        if (!gameStarted) {
+            startButton.Draw(); // แสดงปุ่ม
+
+            Vector2 mousePos = GetMousePosition();
+            if (startButton.isPressed(mousePos, IsMouseButtonPressed(MOUSE_LEFT_BUTTON))) {
+                gameStarted = true; // เริ่มเกมเมื่อปุ่มถูกกด
+            }
+        }
+        else {
+            // เริ่มเกมเมื่อกดปุ่มแล้ว
+            break;
+        }
+
+        EndDrawing();
+    }
+
     Player player(60, GROUND_Y - 80);
-    Coin coins[COIN_COUNT] = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
-, {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130}, {1250, GROUND_Y - 130}
-, {1350, GROUND_Y - 130} , {1500, GROUND_Y - 220} , {1550, GROUND_Y - 220} , {1600, GROUND_Y - 220} , {1650, GROUND_Y - 220}
-, {1700, GROUND_Y - 130} , {1750, GROUND_Y - 130} , {1800, GROUND_Y - 130} , {1850, GROUND_Y - 130} , {1900, GROUND_Y - 220}
-, {1900, GROUND_Y - 350} };
+    Coin coins[COIN_COUNT] = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180},
+                               {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130},
+                               {1250, GROUND_Y - 130}, {1350, GROUND_Y - 130}, {1500, GROUND_Y - 220}, {1550, GROUND_Y - 220},
+                               {1600, GROUND_Y - 220}, {1650, GROUND_Y - 220}, {1700, GROUND_Y - 130}, {1750, GROUND_Y - 130},
+                               {1800, GROUND_Y - 130}, {1850, GROUND_Y - 130}, {1900, GROUND_Y - 220}, {1900, GROUND_Y - 350} };
     Obstacle obstacle(500, GROUND_Y - 50);
 
     int score = 0;
@@ -51,8 +78,8 @@ int main() {
     Texture2D coinTexture = LoadTextureFromImage(coinImage); // แปลง Image เป็น Texture
     UnloadImage(coinImage); // ลบ Image เมื่อไม่ใช้งานแล้ว
 
-    std::vector<Texture2D> backgrounds = { background }; // Add this line
-    std::vector<Texture2D> coinPatterns = { coinTexture }; // Add this line
+    std::vector<Texture2D> backgrounds = { background };
+    std::vector<Texture2D> coinPatterns = { coinTexture };
 
     ScreenController screenController(screenWidth, screenHeight, player, coins, COIN_COUNT, obstacle, backgrounds, coinPatterns, coinTexture);
 
