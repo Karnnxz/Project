@@ -30,32 +30,35 @@ int main() {
 
     SetTargetFPS(60);
 
-    Texture2D background = LoadTexture("../../../../AssetsCompro/Monster/background3.jpg");
+    Texture2D background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background1.png");
+    Texture2D Menubackground = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/MenuBackground.png");
     if (background.id == 0) {
         TraceLog(LOG_ERROR, "Failed to load background texture!");
     }
+    // ปรับตำแหน่งปุ่มให้อยู่มุมล่างตรงกลาง
+    Vector2 buttonPosition = { screenWidth / 2 - 100, screenHeight - 120 };
 
-    // สร้างปุ่มเริ่มเกม
-    Button startButton("C:/Users/ADMIN/Downloads/start_button.png", { screenWidth / 2 - 100, screenHeight / 2 - 50 }, 1.0f);
+    // สร้างปุ่มด้วยตำแหน่งที่กำหนด
+    Button startButton("../../../OneDrive/Desktop/Coding/Project/Compro/Button.png", buttonPosition, 0.5f);
 
     bool gameStarted = false; // เพิ่มตัวแปรเพื่อตรวจสอบว่าเกมเริ่มหรือยัง
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
-        DrawTexture(background, 0, 0, WHITE);
 
         if (!gameStarted) {
-            startButton.Draw(); // แสดงปุ่ม
+            DrawTexture(Menubackground, 0, 0, WHITE); // แสดงภาพเริ่มต้น
+            startButton.Draw();
 
             Vector2 mousePos = GetMousePosition();
             if (startButton.isPressed(mousePos, IsMouseButtonPressed(MOUSE_LEFT_BUTTON))) {
-                gameStarted = true; // เริ่มเกมเมื่อปุ่มถูกกด
+                gameStarted = true; // เปลี่ยนสถานะเป็นเริ่มเกม
             }
         }
         else {
-            // เริ่มเกมเมื่อกดปุ่มแล้ว
-            break;
+            DrawTexture(background, 0, 0, WHITE); // เปลี่ยนไปใช้ Background เกม
+            break; // ออกจากลูปเพื่อเข้าสู่เกมหลัก
         }
 
         EndDrawing();
@@ -87,6 +90,7 @@ int main() {
         UpdateDrawFrame(screenController, time, score, gameOver, background);
     }
 
+    UnloadTexture(Menubackground);
     CloseWindow();
     player.Unload();
     UnloadTexture(background);
