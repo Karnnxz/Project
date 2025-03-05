@@ -18,13 +18,14 @@ ScreenController::ScreenController(int screenWidth, int screenHeight, Player& pl
     camera.zoom = 1.0f;
 
     // Initialize backgrounds array
-    this->backgrounds[0] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background1.png");
-    this->backgrounds[1] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
-    this->backgrounds[2] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background3.png");
+    this->backgrounds[0] = LoadTexture("../../../../AssetsCompro/Monster/background3.jpg");
+    this->backgrounds[1] = LoadTexture("../../../../AssetsCompro/Monster/background.png");
+    this->backgrounds[2] = LoadTexture("../../../../AssetsCompro/Monster/background2.jpg");
+    this->backgrounds[3] = LoadTexture("../../../../AssetsCompro/Monster/background4.jpg");
+    this->backgrounds[4] = LoadTexture("../../../../AssetsCompro/Monster/background5.png");
 
     SetCoinPattern(backgroundState); // เรียกใช้เมื่อเริ่มเกม
 }
-
 
 ScreenController::~ScreenController() {
 }
@@ -86,8 +87,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             messageTimer = 2.0f;
 
             UnloadTexture(background);
-            background = LoadTexture("../../../../AssetsCompro/Monster/background.png");
-
+            background = LoadTexture("../../../../AssetsCompro/Monster/background4.jpg");
             player.SetGameOver(false);
             player.Reset(60, GROUND_Y - 80);
 
@@ -106,6 +106,27 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             messageTimer = 2.0f;
 
             UnloadTexture(background);
+            background = LoadTexture("../../../../AssetsCompro/Monster/background.png");
+
+            player.SetGameOver(false);
+            player.Reset(60, GROUND_Y - 80);
+
+            obstacle = Obstacle(1000, GROUND_Y - 50);
+
+            // ⭐ เปลี่ยนรูปแบบการวางเหรียญ
+            SetCoinPattern(backgroundState);
+        }
+        // เปลี่ยนจากด่าน 3 -> ด่าน 4
+        else if (score == 300 && backgroundState == 3) {
+            time = 0.0f;
+            gameOver = false;
+            backgroundState = 4;
+            level++;
+
+            showLevelUpMessage = true;
+            messageTimer = 2.0f;
+
+            UnloadTexture(background);
             background = LoadTexture("../../../../AssetsCompro/Monster/background2.jpg");
 
             player.SetGameOver(false);
@@ -116,6 +137,29 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             // ⭐ เปลี่ยนรูปแบบการวางเหรียญ
             SetCoinPattern(backgroundState);
         }
+
+        // เปลี่ยนจากด่าน 4 -> ด่าน 5
+        else if (score == 400 && backgroundState == 4) {
+            time = 0.0f;
+            gameOver = false;
+            backgroundState = 5;
+            level++;
+
+            showLevelUpMessage = true;
+            messageTimer = 2.0f;
+
+            UnloadTexture(background);
+            background = LoadTexture("../../../../AssetsCompro/Monster/background5.png");
+
+            player.SetGameOver(false);
+            player.Reset(60, GROUND_Y - 80);
+
+            obstacle = Obstacle(1000, GROUND_Y - 50);
+
+            // ⭐ เปลี่ยนรูปแบบการวางเหรียญ
+            SetCoinPattern(backgroundState);
+        }
+
 
 
 
@@ -144,6 +188,12 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             }
             else if (backgroundState == 3) {
                 score = 200;
+            }
+            else if (backgroundState == 4) {
+                score = 300;
+            }
+            else if (backgroundState == 5) {
+                score = 400;
             }
             else {
                 score = 0;
@@ -220,6 +270,24 @@ void ScreenController::SetCoinPattern(int backgroundState) {
 , {1700, GROUND_Y - 130} , {1750, GROUND_Y - 130} , {1800, GROUND_Y - 130} , {1850, GROUND_Y - 130} , {1900, GROUND_Y - 220}
 , {1900, GROUND_Y - 350} };
     }
+    else if (backgroundState == 4) { // ด่าน 4
+        coinCount = 20;
+         coinPositions = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
+, {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130}, {1250, GROUND_Y - 130}
+, {1350, GROUND_Y - 130} , {1500, GROUND_Y - 220} , {1550, GROUND_Y - 220} , {1600, GROUND_Y - 220} , {1650, GROUND_Y - 220}
+, {1700, GROUND_Y - 130} , {1750, GROUND_Y - 130} , {1800, GROUND_Y - 130} , {1850, GROUND_Y - 130} , {1900, GROUND_Y - 220}
+, {1900, GROUND_Y - 350} };
+    }
+
+    else if (backgroundState == 5) { // ด่าน 5
+        coinCount = 20;
+        coinPositions = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
+, {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130}, {1250, GROUND_Y - 130}
+, {1350, GROUND_Y - 130} , {1500, GROUND_Y - 220} , {1550, GROUND_Y - 220} , {1600, GROUND_Y - 220} , {1650, GROUND_Y - 220}
+, {1700, GROUND_Y - 130} , {1750, GROUND_Y - 130} , {1800, GROUND_Y - 130} , {1850, GROUND_Y - 130} , {1900, GROUND_Y - 220}
+, {1900, GROUND_Y - 350} };
+    }
+
 
     // นำตำแหน่งที่กำหนดไปใช้กับเหรียญ
     for (int i = 0; i < coinCount && i < coinPositions.size(); i++) {
