@@ -159,14 +159,16 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             // ⭐ เปลี่ยนรูปแบบการวางเหรียญ
             SetCoinPattern(backgroundState);
         }
-
-
-
-
+        if (score == 500 && backgroundState == 5) { // ✅ เมื่อด่าน 5 และคะแนนครบ 500
+            UnloadTexture(background);
+            player.Unload();
+            showWinMessage = true;
+            messageTimer = 2.0f;
+        }
 
         // จำกัดการเลื่อนของกล้อง
         float playerCenterX = player.GetRec().x + player.GetRec().width / 2;
-        float cameraMinX = screenWidth / 2;
+        float cameraMinX  = screenWidth / 2;
         float cameraMaxX = mapEndX - screenWidth / 2;
 
         camera.target.x = fmax(cameraMinX, fmin(playerCenterX, cameraMaxX));
@@ -241,6 +243,11 @@ void ScreenController::Draw(int score, bool gameOver) {
             DrawText("Great!", screenWidth / 2 - 50, screenHeight / 2 - 20, 40, WHITE);
         }
     }
+    if (showWinMessage) {
+        DrawRectangle(screenWidth / 2 - 150, screenHeight / 2 - 50, 300, 100, Fade(GREEN, 0.7f));
+        DrawText("Congratulations!", screenWidth / 2 - 120, screenHeight / 2 - 20, 30, WHITE);
+    }
+
 }
 
 void ScreenController::SetCoinPattern(int backgroundState) {
