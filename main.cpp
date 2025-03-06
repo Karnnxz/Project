@@ -32,6 +32,7 @@ int main() {
 
     Texture2D background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background1.png");
     Texture2D Menubackground = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/MenuBackground.png");
+	Texture2D Endbackground = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/EndBackground.png");
     if (background.id == 0) {
         TraceLog(LOG_ERROR, "Failed to load background texture!");
     }
@@ -74,6 +75,7 @@ int main() {
 
     int score = 0;
     bool gameOver = false;
+	bool gameWin = false;
     float time = 0.0f;
 
     Image coinImage = GenImageColor(20, 20, BLANK); // สร้าง Image โปร่งใส
@@ -87,10 +89,14 @@ int main() {
     ScreenController screenController(screenWidth, screenHeight, player, coins, COIN_COUNT, obstacle, backgrounds, coinPatterns, coinTexture);
 
     while (!WindowShouldClose()) {
+        if (score == 500) {
+			gameWin = true;
+            DrawTexture(Endbackground, 0, 0, WHITE);
+        }
         UpdateDrawFrame(screenController, time, score, gameOver, background);
     }
-
     UnloadTexture(Menubackground);
+    UnloadTexture(Endbackground);
     CloseWindow();
     player.Unload();
     UnloadTexture(background);
