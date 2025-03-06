@@ -18,11 +18,11 @@ ScreenController::ScreenController(int screenWidth, int screenHeight, Player& pl
     camera.zoom = 1.0f;
 
     // Initialize backgrounds array
-    this->backgrounds[0] = LoadTexture("../../../../AssetsCompro/Monster/background3.jpg");
-    this->backgrounds[1] = LoadTexture("../../../../AssetsCompro/Monster/background.png");
-    this->backgrounds[2] = LoadTexture("../../../../AssetsCompro/Monster/background2.jpg");
-    this->backgrounds[3] = LoadTexture("../../../../AssetsCompro/Monster/background4.jpg");
-    this->backgrounds[4] = LoadTexture("../../../../AssetsCompro/Monster/background5.png");
+    this->backgrounds[0] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background1.png");
+    this->backgrounds[1] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
+    this->backgrounds[2] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background3.png");
+    this->backgrounds[3] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background4.png");
+    this->backgrounds[4] = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background5.png");
 
     SetCoinPattern(backgroundState); // เรียกใช้เมื่อเริ่มเกม
 }
@@ -87,7 +87,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             messageTimer = 2.0f;
 
             UnloadTexture(background);
-            background = LoadTexture("../../../../AssetsCompro/Monster/background4.jpg");
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background2.png");
             player.SetGameOver(false);
             player.Reset(60, GROUND_Y - 80);
 
@@ -106,7 +106,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             messageTimer = 2.0f;
 
             UnloadTexture(background);
-            background = LoadTexture("../../../../AssetsCompro/Monster/background.png");
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background3.png");
 
             player.SetGameOver(false);
             player.Reset(60, GROUND_Y - 80);
@@ -127,7 +127,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             messageTimer = 2.0f;
 
             UnloadTexture(background);
-            background = LoadTexture("../../../../AssetsCompro/Monster/background2.jpg");
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background4.png");
 
             player.SetGameOver(false);
             player.Reset(60, GROUND_Y - 80);
@@ -149,7 +149,7 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
             messageTimer = 2.0f;
 
             UnloadTexture(background);
-            background = LoadTexture("../../../../AssetsCompro/Monster/background5.png");
+            background = LoadTexture("../../../OneDrive/Desktop/Coding/Project/Compro/Background5.png");
 
             player.SetGameOver(false);
             player.Reset(60, GROUND_Y - 80);
@@ -161,14 +161,13 @@ void ScreenController::Update(float& time, int& score, bool& gameOver) {
         }
         if (score == 500 && backgroundState == 5) { // ✅ เมื่อด่าน 5 และคะแนนครบ 500
             UnloadTexture(background);
-            player.Unload();
             showWinMessage = true;
             messageTimer = 2.0f;
         }
 
         // จำกัดการเลื่อนของกล้อง
         float playerCenterX = player.GetRec().x + player.GetRec().width / 2;
-        float cameraMinX  = screenWidth / 2;
+        float cameraMinX = screenWidth / 2;
         float cameraMaxX = mapEndX - screenWidth / 2;
 
         camera.target.x = fmax(cameraMinX, fmin(playerCenterX, cameraMaxX));
@@ -244,10 +243,16 @@ void ScreenController::Draw(int score, bool gameOver) {
         }
     }
     if (showWinMessage) {
-        DrawRectangle(screenWidth / 2 - 150, screenHeight / 2 - 50, 300, 100, Fade(GREEN, 0.7f));
-        DrawText("Congratulations!", screenWidth / 2 - 120, screenHeight / 2 - 20, 30, WHITE);
-    }
+        int boxWidth = 300;
+        int boxHeight = 80;
+        int textSize = 30;
 
+        int boxX = (screenWidth - boxWidth) / 2;  // กึ่งกลางแนวนอน
+        int boxY = screenHeight - boxHeight - 40; // ติดขอบล่างขึ้นมา 20px
+
+        DrawRectangle(boxX, boxY, boxWidth, boxHeight, Fade(GREEN, 0.7f));
+        DrawText("Congratulations!", boxX + 30, boxY + 25, textSize, WHITE);
+    }
 }
 
 void ScreenController::SetCoinPattern(int backgroundState) {
@@ -279,7 +284,7 @@ void ScreenController::SetCoinPattern(int backgroundState) {
     }
     else if (backgroundState == 4) { // ด่าน 4
         coinCount = 20;
-         coinPositions = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
+        coinPositions = { {300, GROUND_Y - 130}, {400, GROUND_Y - 180}, {500, GROUND_Y - 220}, {600, GROUND_Y - 180}
 , {700, GROUND_Y - 130}, {950, GROUND_Y - 130}, {1050, GROUND_Y - 130}, {1150, GROUND_Y - 130}, {1250, GROUND_Y - 130}
 , {1350, GROUND_Y - 130} , {1500, GROUND_Y - 220} , {1550, GROUND_Y - 220} , {1600, GROUND_Y - 220} , {1650, GROUND_Y - 220}
 , {1700, GROUND_Y - 130} , {1750, GROUND_Y - 130} , {1800, GROUND_Y - 130} , {1850, GROUND_Y - 130} , {1900, GROUND_Y - 220}
