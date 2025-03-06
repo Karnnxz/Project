@@ -18,6 +18,7 @@ public:
     void ChangeLevel(float& time, int& score, bool& gameOver);
 private:
     float messageTimer = 0.0f;
+    bool showWinMessage = false;
     bool showLevelUpMessage = false;
     int level = 1;
     const float mapStartX = 0;
